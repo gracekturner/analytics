@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponseBadRequest
 from django import forms
 
-import django_excel as excel
 from .choices import *
 from django.contrib.auth.forms import UserCreationForm
 from models import *
