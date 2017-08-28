@@ -27,7 +27,7 @@ SECRET_KEY = 'z-_n_$^nxmq9)3&=6^+t4kgv(ug6afa!izg^d8u6^!m_0j*x#e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['gracekt.pythonanywhere.com']
 
 
 # Application definition
