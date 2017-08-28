@@ -1,0 +1,592 @@
+{% load static %}
+{% load analytics_extras %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Grace Analytics</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--  <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}" />-->
+<script type="text/javascript" src="js/bootstrap-filestyle.min.js"> </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />-->
+<!--  <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}"/>-->
+<style>
+.control__indicator {
+	position: absolute;
+	top: 0px; /*2px*/
+	left: 0;
+	width: 16px;
+	height: 16px;
+	background: #e6e6e6;
+}
+
+.control--radio .control__indicator {
+	border-radius: 50%;
+}
+
+.control {
+  color: gray; /*#9d9d9d;*/
+  font-weight: normal;
+	font-size: 12px;
+	position: relative;
+	/*display: block;*/
+	margin-bottom: 15px;
+  padding-left: 21px;/*30px*/
+  padding-right: 6px;
+	cursor: pointer;
+}
+
+.control input {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+}
+
+/* Hover and focus states */
+.control:hover input ~ .control__indicator,
+.control input:focus ~ .control__indicator {
+	background: #ccc;
+}
+
+/* Checked state */
+.control input:checked ~ .control__indicator {
+	background: #5bc0de; /*#2aa1c0;*/
+}
+
+/* Hover state whilst checked */
+.control:hover input:not([disabled]):checked ~ .control__indicator,
+.control input:checked:focus ~ .control__indicator {
+	background: #5bc0de;/*#0e647d;*/
+}
+
+/* Disabled state */
+.control input:disabled ~ .control__indicator {
+	pointer-events: none;
+	opacity: .6;
+	background: #e6e6e6;
+}
+
+/* Check mark */
+.control__indicator:after {
+	position: absolute;
+	display: none;
+	content: '';
+}
+
+/* Show check mark */
+.control input:checked ~ .control__indicator:after {
+	display: block;
+}
+
+/* Checkbox tick */
+.control--checkbox .control__indicator:after {
+	top: 4px;
+	left: 8px;
+	width: 3px;
+	height: 8px;
+	transform: rotate(45deg);
+	border: solid #fff;
+	border-width: 0 2px 2px 0;
+}
+
+/* Disabled tick colour */
+.control--checkbox input:disabled ~ .control__indicator:after {
+	border-color: #7b7b7b;
+}
+
+/* Radio button inner circle */
+.control--radio .control__indicator:after {
+	top: 5px;
+	left: 5px;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #fff;
+}
+
+/* Disabled circle colour */
+.control--radio input:disabled ~ .control__indicator:after {
+	background: #7b7b7b;
+}
+.hidden {
+  display: none;
+}
+.side {
+
+}
+.check {
+  color: black;
+
+}
+.key {
+  width: 80px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.form {
+  text-align: center;
+  color: gray;
+  border-bottom-color: gray;
+
+
+}
+hr { width:80%; height:1px; background: #fff }
+.options {
+  width: 60%;
+  text-align: center;
+  margin-top: 10%;
+  height: 30px;
+  outline: 0;
+}
+
+
+.centering {
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.center {
+  text-align: left;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+
+.options: hover {
+  background-color: white;
+}
+.sidebar {
+  position: absolute;
+  top: 20%;
+  left: 80%;
+  text-align: right;
+
+}
+.plots {
+  position: absolute;
+  text-align: center;
+  left: 20%;
+}
+.close {
+  width: 80px;
+  height: 30px;
+  background-color: black;
+  color: white;
+  outline: 0;
+  margin-top: 20px;
+}
+
+.add {
+  width: 80px;
+  height: 35px;
+  background-color: black;
+  color: white;
+  outline: 0;
+  margin-top: 20px;
+}
+.break {
+   display: block;
+}
+.close-two {
+  width: 80px;
+  height: 30px;
+  background-color: black;
+  color: white;
+  outline: 0;
+  margin-top: 30px;
+
+}
+
+
+.popup {
+  display: none;
+  position: absolute;
+  width: 50%;
+  height: 70%;
+  top: 20%;
+  margin-left: 20%;
+  background-color: white;
+  color: black;
+  border-radius: 3px;
+  border: 1px solid black;
+}
+
+.closeup {
+  margin-left: 2%;
+  width: 90%;
+  height: 80%;
+}
+.header{
+  text-align: right;
+  background-color: black;
+  color: white;
+  padding: 1%;
+}
+a {
+  color: white;
+  text-decoration: none;
+  margin-left: 10px;
+}
+ button {
+  width: 150px;
+  height: 40px;
+  background-color: black;
+  color: white;
+  outline: 0;
+}
+
+.scroll {
+    width: 400px;
+    height: 80px;
+    margin-left: 10px;
+    overflow: scroll;
+}
+
+#myInput {
+    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 80%; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 5px 10px 5px 20px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+    outline: none;
+}
+
+#myUL {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#myUL li .header {
+    border: 1px solid #ddd; /* Add a border to all links */
+    margin-top: -1px; /* Prevent double borders */
+    background-color: #f6f6f6; /* Grey background color */
+    padding: 12px; /* Add some padding */
+    text-decoration: none; /* Remove default text underline */
+    font-size: 12px; /* Increase the font-size */
+    color: black; /* Add a black text color */
+    display: block; /* Make it into a block element to fill the whole list */
+}
+img.map, map area{
+    outline: none;
+}
+
+#myUL li a.header {
+    background-color: #e2e2e2; /* Add a darker background color for headers */
+    cursor: default; /* Change cursor style */
+}
+
+#myUL li a:hover:not(.header) {
+    background-color: #eee; /* Add a hover effect to all links, except for headers */
+}
+</style>
+</head>
+<script>
+function test(stuff) {
+  $('#add_form').append(stuff);
+  $('#blank_form').show();
+}
+
+
+
+function Display(id) {
+  document.getElementById(id).style.cssText = "display: inline;";
+
+}
+function Close(id) {
+  document.getElementById(id).style.cssText = "display: none;";
+
+}
+
+
+function myFunction() {
+    // Declare variables
+    var input, filter, ul, li, a, i, boolean;
+    input = document.getElementById('myInput');
+    filter = input.value.toUpperCase().split(",");
+    for (i = 0; i < filter.length; i++){
+      filter[i] = filter[i].trim();
+    }
+
+    ul = document.getElementById("myUL");
+    li = ul.getElementsByTagName('li');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        for (j = 0; j < filter.length; j++){
+
+        if (a.id.toUpperCase()==filter[j]) {
+          boolean = "True"
+        }
+      }
+        if (boolean == "True"){
+          li[i].style.display = "";
+        }
+        else {
+            li[i].style.display = "none";
+        }
+        boolean = "False"
+
+    }
+}
+</script>
+
+<body onload= "myFunction()">
+<div class = "header">
+<button class = "open" id = "show_settings">Settings</a>
+<a href = "/logout/">Log Out</a>
+</div>
+<div class = "plots">
+<h2>{{dataset}}: {{anlyt}}: {{present}}<!--: {{anlytmethod}}: {{presentmethod}}*/--></h2>
+{%if anlyt == 2%}
+<p>Click on a Node for more Information</p>
+<p> Similarity Score Cut Off: 0.1 </p>
+<img src="/image/{{netid}}/" width = "480" height = "480" usemap ='#networkmap'><br>
+
+
+
+<map name="networkmap">
+
+{%for each in pos%}
+<area id = "{{each.id}}" shape="circle" class = "mapping" coords="{{each.x}},{{each.y}}, 10" href="/network/{{netid}}/{{each.id}}" >
+{%endfor%}
+<!--<area shape="circle" coords="86, 24, 200" href="/network/{{netid}}/{{each.id}}" >-->
+</map>
+
+<div class = "popup closeup" id = "network_closeup" >
+  <img id = "closeup" src="/network/{{netid}}/" height = "300" width = "300" >
+
+  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by text id(s)... (example: 1, 12, 13)" value = "">
+  <div class ="scroll">
+  <ul id="myUL">
+    {%for each in dataid%}
+    <li><a id = {{each.id}}  class="header">{{each.id}}: {{each.text}}</a></li>
+    {%endfor%}
+  </ul>
+</div>
+</input>
+  <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+
+</div>
+
+{%endif%}
+{%if anlyt != 2%}
+<img src="/image/{{netid}}/"><br>
+{%endif%}
+</div>
+<div class = "sidebar open">
+<button id = "show_data">Change Data Set</button>
+<br></br>
+<button id = "show_anlyt" >Change Analytic Method</button>
+<br></br>
+<button id = "show_present" >Change Presentation Method</button>
+<br></br>
+<button >Download Results</button>
+</div>
+
+
+
+<div class = "popup form" id = "blank_form">
+
+
+
+    <div id = "form_options" class = "hidden">
+      <form id = "blank_form" action = "/main/{{netid}}/" enctype="multipart/form-data"method="post">
+        <h2>Choose A Dataset</h2>
+          {% csrf_token %}
+        {{form_options}}
+        <input class = "close" type="submit" value="Submit"  />
+        <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+      </form>
+    </div>
+
+    <div id = "form_data" class = "hidden side ">
+      <form id = "blank_form" action = "/main/{{netid}}/" enctype="multipart/form-data"method="post">
+        <h2>Upload a Dataset</h2>
+        <div class = "center">
+
+        {% csrf_token %}
+        {%for each in form_data %}
+        {{each.label}}
+        {{each}}
+        <br></br>
+        {%endfor%}
+      </div>
+        <input class = "close" type="submit" value="Submit"  />
+        <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+      </form>
+    </div>
+
+    <div id = "form_anlyt" class = "hidden">
+      <form id = "blank_form" action = "/main/{{netid}}/" enctype="multipart/form-data"method="post">
+          <h2>Choose an Analytic Method</h2>
+          {% csrf_token %}
+          {{form_anlyt}}
+          <input class = "close" type="submit" value="Submit"  />
+          <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+      </form>
+    </div>
+
+    <div id = "form_present" class = "hidden">
+      <form id = "blank_form" action = "/main/{{netid}}/" enctype="multipart/form-data"method="post">
+          <h2>Choose a Presentation Method</h2>
+          {% csrf_token %}
+          {{form_present}}
+          <input class = "close" type="submit" value="Submit"  />
+          <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+      </form>
+    </div>
+
+    <div id = "form_settings" class = "hidden">
+      <form id = "blank_form" action = "/main/{{netid}}/" enctype="multipart/form-data"method="post">
+          <h2>Change your Settings</h2>
+          <p>Haha, no settings to change yet...</p>
+          <input class = "close" type="submit" value="Submit"  />
+          <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+      </form>
+    </div>
+
+    <div id = "form_anlyt_cat_2" class = "hidden">
+      <form id = "blank_form" action = "/main/{{netid}}/" enctype="multipart/form-data"method="post">
+          <h2>Choose Keywords and Categories</h2>
+          {% csrf_token %}
+          <div id = "form_anlyt_cat"></div>
+
+          <input class = "close" type="submit" value="Submit"  />
+          <input id = "close" type = "reset" class = "close" value = "Cancel"/>
+      </form>
+    </div>
+
+  </form>
+
+
+</div>
+
+<script>
+
+
+$(".mapping").on("click", function(e){
+    id = e.target.id;
+    string = "/network/{{netid}}/" + id + "/";
+    string2 = "/texts/{{netid}}/" + id + "/";
+    e.preventDefault();
+    $("#closeup").attr("src",string);
+
+    $('#network_closeup').show();
+
+
+
+    //alert('test');
+});
+
+$( '.open').click(function(event) {
+  $('#blank_form').show();
+  $('.hidden').hide();
+  if (event.target.id == "show_data") {
+  if ($('select#dataset_options option').length == 1) $('#form_data').show();
+  else $('#form_options').show();
+}
+
+if (event.target.id == "show_anlyt") {
+$('#form_anlyt').show();
+  $('#anlyt_options').prop('selectedIndex',0);
+
+}
+
+if (event.target.id == "show_present") {
+$('#form_present').show();
+
+}
+
+if (event.target.id == "show_settings") {
+$('#form_settings').show();
+
+}
+
+});
+
+form_count = 0;
+
+$( '#anlyt_options').change(function() {
+
+  if ($(this).val() === "1") {
+  $('#form_anlyt').hide();
+  $('#form_anlyt_cat').show();
+  $('#form_anlyt_cat_2').show();
+  $('#form_anlyt_cat').empty();
+  $('#form_anlyt_cat').append('<br></br>{{form_anlyt_cat.model_title.label}}{{form_anlyt_cat.model_title}}<br></br>');
+  {%for each in form_anlyt_cat_extras %}
+    var keyword = $('<label for = "key">Keyword</label><input id = "key" class = "key" type = "text" value = "{{each.key}}"/>');
+    keyword.attr('name', 'extra_key_' + form_count );
+
+    var category = $('<label for = "key">Category</label><input id = "cat" class = "key" type = "text" value = "{{each.dict}}"/>');
+    category.attr('name', 'extra_cat_' + form_count );
+
+    var Delete = $('<label for = "key">Delete</label><input id = "del" type = "checkbox"/>');
+    Delete.attr('name', 'extra_delete_' + form_count );
+
+    $("#form_anlyt_cat").append(keyword);
+    $("#form_anlyt_cat").append(category);
+    $("#form_anlyt_cat").append(Delete);
+    $("#form_anlyt_cat").append($('<br></br>'));
+    form_count++;
+{%endfor%}
+
+    $("#form_anlyt_cat").append($('<button class= "margin-top add" id="add_another">Add Another </button>'));
+  //$('#newd-form')[0].reset();
+}
+  });
+
+
+  $( '.close').click(function() {
+    $('.hidden').hide();
+    $('.popup').hide();
+    });
+
+  $( '#form_anlyt_cat').click(function(event) {
+    if (event.target.id == "add_another"){
+    document.getElementById("add_another").remove();
+    var keyword = $('<label for = "key">Keyword</label><input id = "key" class = "key" type = "text"/>');
+    keyword.attr('name', 'extra_key_' + form_count );
+
+
+    var category = $('<label for = "cat">Category</label><input id = "cat" class = "key" type = "text"/>');
+    category.attr('name', 'extra_cat_' + form_count );
+
+
+    var Delete = $('<label for = "key">Delete</label><input id = "del" type = "checkbox"/>');
+    Delete.attr('name', 'extra_delete_' + form_count );
+
+
+    $("#form_anlyt_cat").append(keyword);
+    $("#form_anlyt_cat").append(category);
+    $("#form_anlyt_cat").append(Delete);
+    $("#form_anlyt_cat").append($('<br></br>'));
+    $("#form_anlyt_cat").append($('<button id="add_another" class= "margin-top add">Add Another </button>'));
+    form_count++;
+  }
+  });
+
+  $( '#dataset_options').change(function() {
+
+    if ($(this).val() === "00") {
+    $('#form_options').hide();
+    $('#form_data').show();
+    $('#from_data')[0].reset();
+  }
+    });
+
+
+</script>
+
+</body>
+</html>
