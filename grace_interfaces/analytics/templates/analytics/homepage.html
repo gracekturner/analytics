@@ -9,44 +9,22 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <style>
+
+/*background design */
+body {
+  background-color: #AED6F1;
+  font-family: "Courier New";
+  text-align: left;
+  color: white;
+  margin: 0px;
+}
 .second-page {
   background-color: black;
   color: white;
-  padding-bottom: 20px;
+  padding-bottom: 500px;
+  padding-top: 10px;
   margin-top: 0px;
-}
-.caro-indicators  {
-    position: absolute;
-    top: 80%;
-    left: 41.5%;
-
-}
-.caro-login {
-  position: absolute;
-  top: 55%;
-  left: 41.5%;
-}
-button:focus{
-  opacity: 1;
-outline:0;
-}
-.caro-button {
-  margin: 0 2px;
-
-  background-color: #f39c12;
-  border-color: #f39c12;
-
-  padding: 5px;
-  opacity: .7;
-  border-radius: 25px;
-}
-.overlay {
-  width:100%;
-height:100%;
-position:absolute;
-background-color:black;
-opacity:0.89;
-border-radius:30px;
+  padding-left: 4%;
 }
 .caro .slide .slide-1,
 .caro .slide .slide-2,
@@ -56,91 +34,170 @@ border-radius:30px;
   background-position: center center;
   background-repeat: no-repeat;
 
-}
-.caro .slide .slide-2 {
-  background-image: url(https://static.pexels.com/photos/34199/pexels-photo.jpg);
-
 
 }
-.caro .slide .slide-3 {
-  background-image: url(https://static.pexels.com/photos/34601/pexels-photo.jpg);
 
-}
-.caro .slide .slide-1 {
- background-image: url(https://static.pexels.com/photos/29028/pexels-photo.jpg);
-}
 .slide {
-  /*
-  color :  #f39c12;
-  */
-  color: black;
 
   display: none;
 }
-.form {
-  text-align: center;
-  color: gray;
-  border-bottom-color: gray;
 
 
-}
-.slide-text{
-  position: absolute;
-  top: 20%;
-  left: 20%;
-  text-align: center;
-}
-.select {
-  display: inline-block;
-
-}
 .popup {
   display: none;
-  position: relative;
-  width: 120%;
-  height: 70%;
-  background-color: white;
+  position: absolute;
+  top: 25%;
+  left: 35%;
+  background-color:white;
   color: black;
   border-radius: 3px;
-  border: 1px solid black;
+  border: 3px solid #5DADE2;
   text-align: right;
-  padding-top: 10px;
-  padding-right: 10px;
-  margin-left: -40%;
-  margin-top: -10%;
+  padding: 40px;
+
 }
+
+/*locations of things*/
+.up-arrow-indicator {
+  margin-left: 90%;
+
+}
+.caro-indicator  {
+    position: absolute;
+    top: 80%;
+    left: 41.5%;
+
+}
+
+.login-indicator {
+  position: absolute;
+  top: 55%;
+  left: 41.5%;
+}
+
+.about-indicator {
+  position: absolute;
+  top: 5%;
+  left: 90%;
+}
+
+.text-indicator{
+  position: absolute;
+  top: 65%;
+  left: 7%;
+
+}
+.title-indicator {
+  position: absolute;
+  top:5%;
+  left: 4%;
+}
+.login-indicator {
+  position: absolute;
+  top: 40%;
+  left: 33%;
+}
+
+/*button and input design*/
+button:focus{
+  opacity: 1;
+outline:0;
+}
+
+input:focus{
+  opacity: 1;
+outline:0;
+}
+.caro-button {
+  margin: 0 2px;
+  background-color: #5DADE2;
+  opacity: 0.7;
+  border-color: #5DADE2;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  font-size: large;
+  font-family: "Courier New"
+}
+
+.login-caro {
+
+  padding: 10px;
+  margin-left: 30px;
+}
+
+ .login {
+   background-color: #f39c12;
+   border-color: #5DADE2;
+   padding: 20px 40px 20px 40px;
+   opacity: .7;
+   border-radius: 10px;
+   font-size: larger;
+}
+
+
+/* Typewriter Animation */
+.typewriter h1 {
+
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .1em solid #5DADE2; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin:10px 0 0 10px; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation:
+    typing 2.5s steps(30, end),
+    blink-caret .75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  20% { border-color: #5DADE2;  }
+}
+
+
+
+
 
 </style>
 <script>
 
+// change slide text (the typewriter stuff) on timers
 function changeSlide(int) {
-  document.getElementById("button-1").style.cssText = "background-color: #f39c12; opacity: 0.7;"
-  document.getElementById("button-2").style.cssText = "background-color: #f39c12; opacity: 0.7;";
-  document.getElementById("button-3").style.cssText = "background-color: #f39c12; opacity: 0.7;";
+  document.getElementById("button-1").style.cssText = "background-color: #5DADE2; opacity: 0.7;"
+  document.getElementById("button-2").style.cssText = "background-color: #5DADE2; opacity: 0.7;";
+  document.getElementById("button-3").style.cssText = "background-color: #5DADE2; opacity: 0.7;";
   document.getElementById("slide-1").style.cssText = "display: none;";
   document.getElementById("slide-2").style.cssText = "display: none;";
   document.getElementById("slide-3").style.cssText = "display: none;";
 
   if (int == 1){
-    document.getElementById("button-1").style.cssText = "background-color: #d6890e; opacity: 1;"
+    document.getElementById("button-1").style.cssText = "background-color: #5499C7; opacity: 1;"
     document.getElementById("slide-1").style.cssText = "display: inline;";
 
   }
 
   if (int == 2){
-    document.getElementById("button-2").style.cssText = "background-color: #d6890e; opacity: 1;"
+    document.getElementById("button-2").style.cssText = "background-color: #5499C7; opacity: 1;"
     document.getElementById("slide-2").style.cssText = "display: inline;";
 
   }
   if (int == 3){
-    document.getElementById("button-3").style.cssText = "background-color: #d6890e; opacity: 1;"
+    document.getElementById("button-3").style.cssText = "background-color: #5499C7; opacity: 1;"
     document.getElementById("slide-3").style.cssText = "display: inline;";
   }
   inty = int;
 
-  startTimer(2000);
+  startTimer(3500);
 }
 
+// the timer stuff
 var inty = 0;
 var timeouts = [];
 function startTimer(seconds) {
@@ -149,6 +206,7 @@ function startTimer(seconds) {
           timeouts.push(setTimeout(function() {changeSlide(inty);}, seconds));
 
   }
+// manually change slide using the carousel buttons
 function manuChangeSlide(int) {
 
     for (var i = 0; i < timeouts.length; i++) {
@@ -161,45 +219,46 @@ function manuChangeSlide(int) {
 </script>
 <body onload = "startTimer(2000)">
 
+<!--This contains first half of the main page -->
 <div class = "caro">
 
+<!--Typewriting Text-->
 <div class = "slide" id = "slide-1" style= "display: inline;">
 <div class = "slide-1"> </div>
-<div class = "slide-text">
-<h1> GRACE ANALYTICS</h1>
-<h1>Automate Coding of Sensitive Data</h1>
+<div class = "text-indicator typewriter">
+<h1 >Automate Coding of Sensitive Data.</h1>
 </div>
 </div>
 
 <div class = "slide" id = "slide-2">
 <div class = "slide-2"> </div>
-<div class = "slide-text">
-  <h1> GRACE ANALYTICS</h1>
-<h1>Analyze Similarities Across Free Text</h1>
+<div class = "text-indicator typewriter">
+<h1 >Analyze Similarities Across Free Text.</h1>
 </div>
 </div>
 
 <div class = "slide" id = "slide-3">
   <div class = "slide-3"> </div>
-<div class = "slide-text">
-  <h1> GRACE ANALYTICS</h1>
-<h1>Analyze Sentiment using Python </h1>
+<div class = "text-indicator typewriter">
+<h1>Analyze Sentiment using Python. </h1>
 </div>
 </div>
-<div class = "caro-login">
 
+<!-- Popup login/signup boxes -->
+<!--Login (duh)-->
 <div class = "popup" id = "login">
   <form method="post">
       {% csrf_token %}
       {%for each in login%}
       {{each.label}}
-      {{each}}
+      {{each}}<br></br>
       {%endfor%}
-      <input type = "submit" value = "submit"/>
-      <input class = "close" type = "reset" value = "cancel"/>
+      <input class = "caro-button login-caro" type = "submit" value = "submit"/>
+      <input class = "close caro-button login-caro" type = "reset" value = "cancel"/>
   </form>
 </div>
 
+<!--Sign Up (duh)-->
 <div class = "popup" id = "signup">
   <form method="post">
       {% csrf_token %}
@@ -207,26 +266,35 @@ function manuChangeSlide(int) {
       {{each.label}}
       {{ each }} <br></br>
       {%endfor%}
-      <input type = "submit" value = "submit"/>
-      <input class = "close" type = "reset" value = "cancel"/>
+      <input class = "caro-button login-caro" type = "submit" value = "submit"/>
+      <input class = "close caro-button login-caro"  type = "reset" value = "cancel"/>
   </form>
-
 </div>
 
-<div id = "show">
-  <button  class = "caro-button open" id = "show_signup"> Sign Up</button>
-<button  class = "caro-button open" id = "show_login"> Log In </button>
-</div>
-</div>
-<div class = "caro-indicators">
 
+<!--Stuff that is on the main page and is more static.-->
+<h3 class = "about-indicator">About </h3>
+
+<h3 class = "title-indicator">Grace Analytics </h3>
+
+<div  class = "login-indicator" id = "show">
+  <button  class = "caro-button open login" id = "show_signup"> Sign Up</button>
+<button  class = "caro-button open login" id = "show_login"> Log In </button>
+</div>
+
+<!--Carousel buttons-->
+<div class = "caro-indicator">
 <button class = "caro-button" onclick="manuChangeSlide(1)" id = "button-1" autofocus style = "opacity: 1;"></button>
 <button  class = "caro-button" onclick="manuChangeSlide(2)" id = "button-2" ></button>
 <button  class = "caro-button" onclick="manuChangeSlide(3)" id = "button-3" ></button>
 </div>
+
 </div>
 
-<div class = "second-page">
+<!--About page-->
+<div class = "second-page" id = "about">
+<h1 class = "up-arrow-indicator">^</h1>
+
 <h1>About the Project</h1>
 <p>Grace Analytics was founded to bridge the gap in industry analytics. Relatively few companies provide Natural Language Processing (NLP) for the non-programming analyst.
   As a Grace Analytics Member, you can:</p>
@@ -236,7 +304,23 @@ function manuChangeSlide(int) {
 <h1>About the Founder </h1>
 <p> Grace likes to code. Grace likes languages. Grace hopes you like her project.</p>
 </div>
+
 <script>
+// scroll down function
+$(".about-indicator").click(function() {
+    $('html,body').animate({
+        scrollTop: $("#about").offset().top},
+        'slow');
+});
+
+// scroll up function
+$(".up-arrow-indicator").click(function() {
+    $('html,body').animate({
+        scrollTop: $(".about-indicator").offset().top},
+        'slow');
+});
+
+// open popup function
 $( '.open').click(function(event) {
   $('#show').hide();
 if (event.target.id == "show_signup") {
@@ -249,6 +333,7 @@ $('#login').show();
 }
 });
 
+// close popup function
 $( '.close').click(function(event) {
 $('.popup').hide();
 $('#show').show();

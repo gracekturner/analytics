@@ -4,10 +4,123 @@ import numpy as np
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk import tokenize
 from nltk import word_tokenize
+from nltk import sent_tokenize
+from nltk import pos_tag
 from nltk.corpus import stopwords
 from itertools import combinations
 import re
 import networkx as nx
+#from nltk.corpus import wordnet as wn
+
+## takes a list of text objects and builds a topic fingerprint for each, then reverse index for ""
+## originally used wordnet etc. but the performance value for that is shit. (~6x worse) Pythonanywhere times out.
+## so now it looks at basic words without getting very fancy. It looks at it by sentence tho.
+def topic_fingerprint_builder(list_of_text_objects, id_object, set_name):
+    if id_object.properties.filter(title = "Finger_Print_" + set_name):
+        return id_object.properties.filter(title = "Finger_Print_" + set_name)[0]
+    results = {}
+    count = 0
+
+    for each in list_of_text_objects:
+
+        if each == id_object: continue
+        count +=1
+        sentences = sent_tokenize(each.text)
+
+        for sentence in sentences:
+            text = pos_tag(word_tokenize(sentence))
+
+            word_count = {}
+            for word in text:
+                if word[0] in ["are", "is", "have", "not", "has", "do", "be", "am"]:
+                    continue
+                if len(word) != 2: continue
+                pos = word[1]
+                word = word[0]
+                syn = []
+                if pos == "NN" or pos == "VB" or pos == "VBP" or pos == "JJ" or pos == "RB":
+                    if word not in word_count:
+                        word_count[word] = 0
+                    word_count[word] +=1
+            fprint = sorted(word_count, key = word_count.get)[-3:]
+
+            for each in fprint:
+                if each not in results:
+                    results[each] = {}
+                    results[each]["count"] = 0
+                    results[each]["ids"] = set()
+                results[each]["ids"].add(count)
+                results[each]["count"] = len(results[each]["ids"])
+
+
+    #print results
+    if not id_object.properties.filter(title = "Finger_Print_" + set_name):
+        p = Property(title = "Finger_Print_" + set_name, description = repr(results))
+        p.save()
+        id_object.properties.add(p)
+    else:
+        p = id_object.properties.filter(title = "Finger_Print_" + set_name)[0]
+        p.description = repr(results)
+        p.save()
+    return p
+
+def topic_fingerprint_builder_old(list_of_text_objects, id_object, set_name):
+    if id_object.properties.filter(title = "Finger_Print_" + set_name):
+        #id_object.properties.filter(title = "Finger_Print_" + set_name)[0].delete()
+        return id_object.properties.filter(title = "Finger_Print_" + set_name)[0]
+    results = {}
+    count = 0
+    for each in list_of_text_objects:
+        if each == id_object: continue
+        count +=1
+        text = word_tokenize(each.text)
+#        text = pos_tag(text)
+        text = [word for word in text if word not in stopwords.words('english')]
+        synsets = {}
+        word_count = {}
+        for word in text:
+            if word:
+#                pos = wordnet.morphy(word[1])
+                try:
+                    w = wn.morphy(word)
+                except:
+                    continue
+
+                if word:
+                    syn = wn.synsets(word)
+                    if word not in word_count:
+                        word_count[word] = 0
+                        synsets[word] = syn
+                    word_count[word] +=1
+        word_pairs = combinations(sorted(synsets), 2)
+        result = {}
+        for each in word_pairs:
+            for a,b in zip(synsets[each[0]],synsets[each[1]]):
+                if a.wup_similarity(b) > 0.65:
+                    result[each] = word_count[each[0]] + word_count[each[1]]
+
+        result.update(word_count)
+        fprint = sorted(result, key = result.get)[-3:]
+
+        for each in fprint:
+            if each not in results:
+                results[each] = {}
+                results[each]["count"] = 0
+                results[each]["ids"] =set()
+            results[each]["count"] +=1
+            results[each]["ids"].add(count)
+
+    #print results
+    if not id_object.properties.filter(title = "Finger_Print_" + set_name):
+        p = Property(title = "Finger_Print_" + set_name, description = repr(results))
+        p.save()
+        id_object.properties.add(p)
+    else:
+        p = id_object.properties.filter(title = "Finger_Print_" + set_name)[0]
+        p.description = repr(results)
+        p.save()
+    return p
+
 # takes a list of Text objects, the array of id_object(s) associated with that dataset,
 # and the title of the dataset ("set_name") for identification.
 def similarity_opt(pair):
@@ -16,6 +129,43 @@ def similarity_opt(pair):
     inter = one.intersection(two)
     uni = one.union(two)
     return Decimal(len(inter))/(Decimal(len(uni)))
+
+def word_bags_freq(list_of_text_objects, id_object, set_name):
+    if id_object.properties.filter(title = "Word_Bag_Freq_" + set_name):
+        return id_object.properties.filter(title = "Word_Bag_Freq_" + set_name)[0]
+    result_wordbag = []
+    count = 0
+    ## process the data into word bags (sets of unique words, not including stopwords)
+    for each in list_of_text_objects:
+        if each == id_object: continue
+        text = word_tokenize(each.text)
+        text = [word for word in text if word not in stopwords.words('english')]
+        dicty = {}
+        for word in text:
+            if word not in dicty:
+                dicty[word] = 0
+            dicty[word] += 1
+
+        result_wordbag.append(dicty)
+
+    result_wordbag = repr(result_wordbag)
+
+    ## if not done, add to properties ##
+    if not id_object.properties.filter(title = "Word_Bag_Freq_" + set_name):
+        p = Property(title = "Word_Bag_Freq_" + set_name, description = result_wordbag)
+        p.save()
+        id_object.properties.add(p)
+    else:
+        p = id_object.properties.filter(title = "Word_Bag_Freq_" + set_name)[0]
+        p.description = result_wordbag
+        p.save()
+    return p
+
+def topic_similarity_score(list_of_text_objects, id_object, set_name):
+    if id_object.properties.filter(title = "Topic_Score_" + set_name ):
+        return
+    wb = word_bags_freq(list_of_text_objects, id_object, set_name)
+    print wb
 
 
 def sentiment(list_of_text_objects, id_object, set_name):
@@ -185,41 +335,3 @@ def similarity_score2(list_of_text_objects, id_object, set_name):
         p.save()
 
 
-def similarity_score(list_of_text_objects, id_object, set_name):
-    if id_object.properties.filter(title = "Similarity_Score_" + set_name):
-        return
-    word_bag = []
-    ids = []
-
-    count = 0
-    result = ""
-    result_wordbag = ""
-
-    ## process the data into word bags (sets of unique words, not including stopwords)
-    for each in list_of_text_objects:
-        if each == id_object: continue
-        text = word_tokenize(each.text)
-        text = [word for word in text if word not in stopwords.words('english')]
-        textset = set(text)
-        word_bag.append(textset)
-        ids.append(count)
-        result_wordbag+= repr(textset) + "\n" + str(count) + "\n"
-        count+=1
-
-    ## generate pairs of word_bags and ids (combinations works so that the ids in vals[0] == pairs[0] )
-    pairs = list(combinations(word_bag, 2))
-    vals = list(combinations(ids, 2))
-    result = []
-
-    for i in range(0, len(pairs)):
-        sim_score = similarity_opt(pairs[i])
-        if sim_score >= 0.1:
-            result.append(vals[i])
-
-    result = repr(unconnected_ids) + "\n" + str(len(ids))
-
-
-    if not id_object.properties.filter(title = "Similarity_Score_" + set_name):
-        p = Property(title = "Similarity_Score_" + set_name, description = result)
-        p.save()
-        id_object.properties.add(p)

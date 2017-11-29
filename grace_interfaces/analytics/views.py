@@ -6,6 +6,7 @@ from django.db import models
 from .forms import *
 import openpyxl
 import pandas
+import xlrd
 from .models import *
 from .presentation import *
 from decimal import *
@@ -113,8 +114,10 @@ def image(request, netid):
     if anlytmethod == "2":
         similarity_score2(list_of_text_objects, id_object, dataname)
         return networkgraph2(id_object.properties.filter(title__contains = "Similarity_Score_" + dataname)[0], dataid = "")
-
-
+    if anlytmethod == "3":
+        chart_object = topic_fingerprint_builder(list_of_text_objects, id_object, dataname)
+        return bubblechart(chart_object)
+        #return blankimage()
 def create_settings(netid):
     text = netid + "***GA***\n\n\n"
     id_object = Text(text = text)
@@ -199,7 +202,10 @@ def parse_post(request, netid):
             if dataname != "NULL":
                 list_of_text_objects = id_object.properties.filter(description__contains = dataname)[0].text_set.all()
                 similarity_score2(list_of_text_objects, id_object, dataname)
-
+        if anlytmethod == "3":
+            if dataname != "NULL":
+                list_of_text_objects = id_object.properties.filter(description__contains = dataname)[0].text_set.all()
+                topic_fingerprint_builder(list_of_text_objects, id_object, dataname)
 
     # if categorizer changes
     form = CurrentCategoryModel(request.POST)
@@ -282,7 +288,7 @@ def main(request, netid):
 
         data = id_object.properties.filter(title = "Similarity_Score_" + dataname)[0].description
         pos = eval(data.split("\n")[2])
-        form['pos'] = [{'id': each, 'x': str(Decimal(pos[each].split(",")[0])*320 + 78), 'y': str((1-Decimal(pos[each].split(",")[1]))*320 + 75)} for each in pos]
+        form['pos'] = [{'id': each, 'x': str(Decimal(pos[each].split(",")[0])*442 + 20) , 'y': str((1- Decimal(pos[each].split(",")[1]))*442 + 15)} for each in pos]
         form['dataid'] = get_text(id_object, dataname)
     form['present'] = presentmethod
     form['netid'] = netid

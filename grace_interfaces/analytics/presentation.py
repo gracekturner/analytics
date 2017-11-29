@@ -12,6 +12,55 @@ from pylab import figure, axes, pie, title
 import numpy as np
 import networkx as nx
 
+def bubblechart(chart_object, dataid = ""):
+    desc = eval(chart_object.description)
+    size = []
+    x = []
+    y = []
+    text = []
+    count = 0
+    sort = sorted(desc,key=lambda x:desc[x]['count'])[-10:]
+    x = [0, 4, 0, 2, 4, 1, 3, 1, 3, 2]
+    y = [0, 0, 4, 4, 4, 1, 1, 3, 3, 2]
+    if len(sort) < 10:
+        x = x[10-len(sort):]
+        y = y[10-len(sort):]
+
+
+    for each in sort:
+        text.append(str(each) + " " + str(desc[each]["count"]))
+        size.append(desc[each]["count"]*10)
+        count +=1
+    f = figure(figsize=(6,6))
+    plt.scatter(x,y,s=size)
+    axes = plt.gca()
+    axes.set_xlim([-1,5.0])
+    axes.set_ylim([-1,5.0])
+
+    for label, x, y in zip(text, x, y):
+        if x < 2.5:
+            plt.annotate(label,
+            xy=(x, y), xytext=(0, 20),
+            textcoords='offset points', ha='right', va='bottom',
+            bbox=dict(boxstyle='round,pad=0.5', fc='#FFFAF0', alpha=0.5),
+            arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
+        if x >= 2.5:
+            plt.annotate(label,
+            xy=(x, y), xytext=(0, 20),
+            textcoords='offset points', ha='left', va='bottom',
+            bbox=dict(boxstyle='round,pad=0.5', fc='#FFFAF0', alpha=0.5),
+            arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
+
+
+    #send to HttpResponse. To be honest, don't know exactly how this works.
+    canvas = FigureCanvasAgg(f)
+    response = HttpResponse(content_type='image/png')
+    canvas.print_png(response)
+    plt.close(f)
+
+    #return response
+    return response
+
 def labels_and_values (chart_object):
 
     # pull out frequency labels and values (space separated file)
@@ -102,16 +151,16 @@ def networkgraph2(chart_object, dataid = ""):
 
     #send to http response
     col_list = plt.cm.get_cmap("Pastel1", 1)
-    print col_list(0)
+
 
     #for i in range(0, len(sub_graphs)):
     #    nx.draw(sub_graphs[i], nx.get_node_attributes(sub_graphs[i], 'pos'), node_color =col_list(i), node_size = 200 )
-    nx.draw(G, pos, node_size=400, node_color = 'aliceblue')
+    #nx.draw(G, pos, node_size=400, node_color = 'slategrey', edgecolor = 'black')
     if labels:
-        nx.draw(G, pos, node_size=1000, node_color = 'aliceblue')
-        nx.draw_networkx_labels(G,pos,labels,font_size=15)
+        nx.draw(G, pos, node_size=1000, node_color = '#4169E1')
+        nx.draw_networkx_labels(G,pos,labels,font_size=15, font_color = 'white')
     else:
-        nx.draw(G, pos, node_size=400, node_color = 'aliceblue')
+        nx.draw(G, pos, node_size=400, node_color = '#4169E1')
     canvas = FigureCanvasAgg(f)
     response = HttpResponse(content_type='image/png')
     canvas.print_png(response)
